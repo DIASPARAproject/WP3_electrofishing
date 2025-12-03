@@ -239,8 +239,9 @@ CREATE TABLE electrofishing.batch (
 CREATE INDEX dbmig_batch_ix_ba_id ON electrofishing.batch USING btree (ba_id);
 CREATE INDEX dbmig_batch_ix_ba_ob_id ON electrofishing.batch USING btree (ba_op_id);
 
-DROP TABLE IF EXISTS electrofishing.batch_ope;
+DROP TABLE IF EXISTS electrofishing.batch_ope CASCADE;
 CREATE TABLE  electrofishing.batch_ope (
+  ba_pass integer,
   CONSTRAINT batch_op_pkey PRIMARY KEY (ba_id),
   CONSTRAINT fk_ba_op_id FOREIGN KEY (ba_op_id) 
   REFERENCES electrofishing.operation(op_id)
@@ -258,7 +259,7 @@ CREATE TABLE  electrofishing.batch_ope (
   CONSTRAINT c_ck_ba_ba_id CHECK (ba_ba_id IS NULL)
 ) INHERITS (electrofishing.batch);
 
-DROP TABLE IF EXISTS electrofishing.batch_fish;
+DROP TABLE IF EXISTS electrofishing.batch_fish CASCADE;
 CREATE TABLE  electrofishing.batch_fish (
   CONSTRAINT batch_fish_pkey PRIMARY KEY (ba_id),
   CONSTRAINT fk_ba_op_id FOREIGN KEY (ba_op_id) 
