@@ -1,0 +1,43 @@
+---
+title-block: false
+date-format: "DD-MM-YYYY"
+description: "Electrofishing database"
+number-sections: true
+format: 
+  pdf:
+    documentclass : report
+    include-in-header:  
+      - text: |
+            \usepackage{tikz}
+    include-before-body: electrofishing_header.tex
+    toc: true
+    toc-depth: 3
+    toc-title: Contents
+    number-sections: true
+    colorlinks: true    
+    use-rsvg-convert: false
+    pdf-engine-opts: ["-shell-escape"]
+execute: 
+ keep-md: false
+filters:
+  - include-code-files
+reference-location: document
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+
+
+# Introduction
+
+# Needs for other working groups
+
+# Creating a database
+
+# Populating the database with test examples
+
+# Creating template datacall for WGEEL
+
+# Annex : MPD Electrofishing 
+

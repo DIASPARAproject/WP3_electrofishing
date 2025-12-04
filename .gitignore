@@ -48,3 +48,22 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 /.project
+
+credentials.yml
+credentials_sav.yml
+
+# Quarto presentations and docs
+
+R/*.html
+R/*.md
+R/*.pdf
+R/*_files/*
+R/data/*.html
+R/data/*_xtml*.*
+R/_extensions/*
+R/assets/*
+R/*.log
+R/*.aux
+
+R/*_files
+R/_extensions
