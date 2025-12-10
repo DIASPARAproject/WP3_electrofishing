@@ -28,6 +28,9 @@ INSERT INTO nomenclature.age (no_id,no_code,no_type,no_name)
   age_description AS no_name
   FROM ref.tr_age_age; --11
 
+ALTER TABLE nomenclature.age OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.age TO diaspara_read;  
+  
 --Create maturity table 
   
 CREATE TABLE nomenclature.maturity (
@@ -44,7 +47,8 @@ INSERT INTO nomenclature.maturity (no_id,no_code,no_type,no_name)
   'maturity' AS no_type,
   mat_description AS no_name
   FROM ref.tr_maturity_mat ; --12
-
+ALTER TABLE nomenclature.maturity OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.maturity TO diaspara_read;  
 -- sex  
   
  /* 
@@ -69,7 +73,8 @@ FROM "ref".tr_sex_sex WHERE sex_code NOT IN ('F', 'M'); --5
 
 UPDATE nomenclature.sex SET no_type='sex';
 DELETE FROM nomenclature.sex WHERE no_id IN (180,183); --2 THESE ARE NO LONGER IN THE DB OK FOR COMPATIBILITY WITH SUDOANG :: will blocK ...
-
+ALTER TABLE nomenclature.sex OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.sex TO diaspara_read; 
 -- stage
 
 /*
@@ -108,7 +113,8 @@ SELECT nextval('seq') AS no_id,
 FROM "ref".tr_lifestage_lfs 
 WHERE lfs_spe_code IN ('SAL', 'TRS');--20
 
-
+ALTER TABLE nomenclature.stage OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.stage TO diaspara_read; 
 -- scientific_observation_method  
   
 INSERT INTO nomenclature.scientific_observation_method  SELECT * FROM nomenclature_eda.scientific_observation_method; --16
@@ -128,6 +134,8 @@ INSERT INTO nomenclature.electrofishing_mean  SELECT * FROM nomenclature_eda.ele
 UPDATE nomenclature.electrofishing_mean SET no_type = 'electrofishing_mean'; --16
 SELECT * FROM nomenclature.electrofishing_mean;
 
+ALTER TABLE nomenclature.electrofishing_mean OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.electrofishing_mean TO diaspara_read; 
 
 -- -- data provider can reference EDMO if exists otherwise not
 DROP TABLE IF EXISTS electrofishing.data_provider CASCADE;
@@ -141,7 +149,8 @@ CREATE TABLE electrofishing.data_provider (
   CONSTRAINT data_provider_pkey PRIMARY KEY (dp_id)  
 );
 
-
+ALTER TABLE electrofishing.data_provider OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.data_provider TO diaspara_read; 
 -- electrofishing.station definition
 
 -- Drop table
@@ -169,6 +178,9 @@ CREATE TABLE electrofishing.station (
 );
 CREATE INDEX electrofishing_station_ix_sta_id ON electrofishing.station USING btree (sta_id);
 CREATE INDEX index_geom ON electrofishing.station USING gist (geom);
+
+ALTER TABLE electrofishing.station OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.station TO diaspara_read;
 
 DROP TABLE IF EXISTS electrofishing.operation;
 CREATE TABLE electrofishing.operation(
@@ -205,7 +217,8 @@ CREATE TABLE electrofishing.operation(
   CONSTRAINT ck_op_duration CHECK (op_duration >0)
 );
 
-
+ALTER TABLE electrofishing.operation OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.operation TO diaspara_read;
 -- electrofishing.batch definition
 
 DROP TABLE IF EXISTS electrofishing.batch;
@@ -239,6 +252,9 @@ CREATE TABLE electrofishing.batch (
 CREATE INDEX dbmig_batch_ix_ba_id ON electrofishing.batch USING btree (ba_id);
 CREATE INDEX dbmig_batch_ix_ba_ob_id ON electrofishing.batch USING btree (ba_op_id);
 
+ALTER TABLE electrofishing.batch OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.batch TO diaspara_read;
+
 DROP TABLE IF EXISTS electrofishing.batch_ope CASCADE;
 CREATE TABLE  electrofishing.batch_ope (
   ba_pass integer,
@@ -258,6 +274,10 @@ CREATE TABLE  electrofishing.batch_ope (
   CONSTRAINT c_ck_ba_batch_level CHECK (ba_batch_level = 1),
   CONSTRAINT c_ck_ba_ba_id CHECK (ba_ba_id IS NULL)
 ) INHERITS (electrofishing.batch);
+
+ALTER TABLE electrofishing.batch_ope OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.batch_ope TO diaspara_read;
+
 
 DROP TABLE IF EXISTS electrofishing.batch_fish CASCADE;
 CREATE TABLE  electrofishing.batch_fish (
@@ -280,6 +300,8 @@ CREATE TABLE  electrofishing.batch_fish (
   CONSTRAINT c_ck_ba_batch_level CHECK (ba_batch_level = 2)  
 ) INHERITS (electrofishing.batch);
 
+ALTER TABLE electrofishing.batch_fish OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.batch_fish TO diaspara_read;
 
 DROP TABLE IF EXISTS electrofishing.biological_characteristic;
 CREATE TABLE electrofishing.biological_characteristic (
@@ -297,8 +319,14 @@ CREATE TABLE electrofishing.biological_characteristic (
 );
 CREATE INDEX dbmig_biological_characteristic_ix_bc_ba_id ON electrofishing.biological_characteristic (bc_ba_id);
 
+ALTER TABLE electrofishing.biological_characteristic OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.biological_characteristic TO diaspara_read;
+
 
 INSERT INTO nomenclature.gear_type SELECT * FROM nomenclature_eda.gear_type ; --74
+
+ALTER TABLE nomenclature.gear_type OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.gear_type TO diaspara_read;
 
 
 CREATE TABLE nomenclature.effort_type (
@@ -306,6 +334,8 @@ CREATE TABLE nomenclature.effort_type (
 )
 INHERITS (nomenclature.nomenclature);
 
+ALTER TABLE nomenclature.effort_type OWNER TO diaspara_admin;
+GRANT SELECT ON nomenclature.effort_type TO diaspara_read;
 -- Table Triggers
 
 CREATE TRIGGER tr_effort_insert BEFORE INSERT ON
@@ -321,6 +351,10 @@ UPDATE nomenclature.effort_type SET (no_code, no_name) = ('nd', 'Net-days (nd)')
 UPDATE nomenclature.effort_type SET (no_code, no_name) = ('gd', 'Gear-days (Fyke net, traps)') WHERE no_id = 100;
 UPDATE nomenclature.effort_type SET no_code = 'm2' WHERE no_id = 102;
 DELETE FROM nomenclature.effort_type WHERE no_id = 105;
+
+biological_characteristic
+
+
 
 DROP TABLE IF EXISTS electrofishing.gear_fishing;
 CREATE TABLE electrofishing.gear_fishing (
@@ -350,3 +384,6 @@ CREATE TABLE electrofishing.gear_fishing (
   CONSTRAINT ck_gf_gear_number CHECK (gf_gear_number>0),
   CONSTRAINT ck_gf_gf_effort_value CHECK (gf_effort_value>0)
 );
+
+ALTER TABLE electrofishing.gear_fishing OWNER TO diaspara_admin;
+GRANT SELECT ON electrofishing.gear_fishing TO diaspara_read;
