@@ -10,6 +10,8 @@
 
 -- DROP TABLE nomenclature.sex;
 
+ALTER TABLE nomenclature.nomenclature ALTER COLUMN no_code TYPE TEXT;
+
 CREATE TABLE nomenclature.age (
   CONSTRAINT age_id PRIMARY KEY (no_id)
 )
@@ -91,16 +93,17 @@ SELECT * FROM "ref".tr_lifestage_lfs;
 SELECT * FROM nomenclature.stage;
 INSERT INTO nomenclature.stage SELECT * FROM nomenclature_eda.stage; --7
 ALTER TABLE nomenclature.stage ADD COLUMN spe_code CHARACTER VARYING(3);
+ALTER TABLE nomenclature.stage ALTER COLUMN spe_code TYPE TEXT;
 ALTER TABLE nomenclature.species ADD CONSTRAINT uk_no_code UNIQUE(no_code);
 ALTER TABLE nomenclature.stage ADD CONSTRAINT fk_species FOREIGN KEY (spe_code)
 REFERENCES nomenclature.species(no_code) ON UPDATE CASCADE ON DELETE RESTRICT;
 
-UPDATE nomenclature.stage SET (no_code, spe_code) = ('G', 'ANG') WHERE no_id =225 ;
-UPDATE nomenclature.stage SET (no_code, spe_code) = ('Y', 'ANG') WHERE no_id =226 ;
-UPDATE nomenclature.stage SET (no_code, spe_code) = ('S', 'ANG') WHERE no_id =227 ; 
-UPDATE nomenclature.stage SET (no_code, spe_code) = ('GY', 'ANG') WHERE no_id =228 ; 
-UPDATE nomenclature.stage SET (no_code, spe_code) = ('YS', 'ANG') WHERE no_id =229 ; 
-UPDATE nomenclature.stage SET (no_code, spe_code) = ('AL', 'ANG') WHERE no_id =230 ; 
+UPDATE nomenclature.stage SET (no_code, spe_code) = ('G', '126281') WHERE no_id =225 ;
+UPDATE nomenclature.stage SET (no_code, spe_code) = ('Y', '126281') WHERE no_id =226 ;
+UPDATE nomenclature.stage SET (no_code, spe_code) = ('S', '126281') WHERE no_id =227 ; 
+UPDATE nomenclature.stage SET (no_code, spe_code) = ('GY', '126281') WHERE no_id =228 ; 
+UPDATE nomenclature.stage SET (no_code, spe_code) = ('YS', '126281') WHERE no_id =229 ; 
+UPDATE nomenclature.stage SET (no_code, spe_code) = ('AL', '126281') WHERE no_id =230 ; 
 DELETE FROM nomenclature.stage WHERE no_id = 224;
 
 
@@ -111,7 +114,7 @@ SELECT nextval('seq') AS no_id,
   lfs_name AS no_name, 
   lfs_spe_code AS spe_code
 FROM "ref".tr_lifestage_lfs 
-WHERE lfs_spe_code IN ('SAL', 'TRS');--20
+WHERE lfs_spe_code IN ('127186', '127187');--20
 
 ALTER TABLE nomenclature.stage OWNER TO diaspara_admin;
 GRANT SELECT ON nomenclature.stage TO diaspara_read; 
