@@ -2,42 +2,290 @@
 title-block: false
 date-format: "DD-MM-YYYY"
 description: "Electrofishing database"
+title-block-banner: "images/diaspara_bandeau.png"
+title-block-banner-color: "white"
 number-sections: true
-format: 
-  pdf:
-    documentclass : report
-    include-in-header:  
-      - text: |
-            \usepackage{tikz}
-    include-before-body: electrofishing_header.tex
-    toc: true
-    toc-depth: 3
-    toc-title: Contents
-    number-sections: true
-    colorlinks: true    
-    use-rsvg-convert: false
-    pdf-engine-opts: ["-shell-escape"]
+format:
+ html:
+  self-contained: true
+  theme: styles.scss
+  smooth-scroll: true
+  fontcolor: black
+  toc: true
+  toc-location: left
+  toc-title: Contents
+  toc-depth: 3
 execute: 
- keep-md: false
+ keep-md: true
 filters:
   - include-code-files
 reference-location: document
+bibliography: diaspara_electrofishing.bib
 editor: 
   markdown: 
     wrap: 72
+include-after-body: "footer.html"
 ---
-
-
 
 # Introduction
 
-# Needs for other working groups
+Electrofishing is a method widely used to sample the fish populations in
+the aquatic environment [@cowx_fishing_1990]. It uses electric current
+between a cathode submersed in the water and a hand held anode
+[@lamarque_types_1976]. Fishes are first affected in their movements by
+electricity,and then stunned. Fishing operators operate around the anode
+with nets to catch the fish. Depending on the environment,
+electrofishing provide quantitative, or semi-quantitative estimations of
+the fishes number, which can be related to the surface of electrofishing
+or timing of electrofishing to provide either density estimates or
+semi-quantitative estimates of abundance. In wadable environment, the
+use of several pass allow to apply depletion statistical method to
+evaluate the abundance. However such operations are time consuming.
+There is a possibility to raise the single pass electrofishing using an
+average electrofishing efficiency to estimate eel densities. The type of
+electrofishing can be used to assess the probability of capture in the
+delta model when using Eel Density Analysis (EDA) [@briand_eel_2022].
+Capture probabilities can be inferred from habitat characteristics
+[@millar_modelling_2016] for salmon in Scotland.
+
+The European Water Framework Directive (Directive 2000/60/EC)
+establishes the legal framework for achieving “good ecological status”
+in all surface waters throughout the European Union. To meet this
+objective, the directive requires Member States to implement
+standardized biological monitoring programs, including the assessment of
+fish communities as one of the core biological quality elements.
+Electrofishing has therefore become a fundamental and widely applied
+method for freshwater fish monitoring across Europe, providing
+quantitative and comparable information on species composition,
+abundance, and size structure. Electrofishing operations are conducted
+routinely in most European countries to sample freshwater populations to
+assess their status in the frame of the Water Framework Directive (WFD)
+and these data could support the development of regional model for eel
+[@reporto2024]
+
+Electofishing operations are also applied in conservation relevant fish
+sampling surveys in lotic freshwaters (e.g. Habitat Directive
+applications). Specific protocols are developed for salmonids
+[@bohlin_electrofishing_1989] and eel [@lambert_etude_1994] to better
+account for fish behaviour and the reaction of fish to the current.
+Salmonids will react very quickly and need to be caught early in nets,
+and the timing of the operation is used. On the contrary, eels which
+often buries in the sediment or under boulders and rocks requires a long
+time to react to the current. Short stop of the current or movement of
+the electrode are required to make the eel out of their shelter, and for
+that reason eel specific protocols sometimes require the anode to stay
+in place for at least 30 seconds [@germis_evaluation_2009]. When the
+depth is too important, electrofishing can be carried out from a boat,
+and provide indices of the abundance of fishes
+[@tomanova_systematic_2013], these indices, while they do not provide
+any quantitative assessment of abundance, can be used to model spatial
+variation in eel abundance [@briand_eel_2022].
+
+As methods used in electrofishing can vary widely, it is necessary to
+collect information on the different protocols. For instance,
+electrofishing can be carried out by foot or by boat, or using a mixture
+of boat and wading in the stream. The apparatus used, and type of
+electric current used (DC or crenated) is important both in terms of
+efficiency and fish injuries [@pottier_electrofishing_2020]. The
+technique used (number of nets, number of anodes, size of nets, fishing
+protocol) varies depending on the country, the objective of the
+operation and the type of habitat, and this is true even for specific
+studies (e.g. Trutta @ices_working_2024).
+
+Multiple environmental factors can influence electrofishing efficiency
+including habitat (water conductivity, depth, riparian cover),
+turbidity, habitat, time, equipment personnel and protocol, and fish
+behaviour [@baldwin_evaluation_2012, @millar_modelling_2016]. The
+size-selectivity of electrofishing may also be biased as most habitats
+surveyed during electrofishing are shallow, with greater proportion of
+small eels.
+
+Electrofishing operations are collected by national and regional
+agencies for the Water Framework Directive (WFD) or with specific
+diadromous surveys objectives. Both sources have been identified as a
+major potential source of information for developing regional spatial
+models for *Anguilla anguilla* (European eel), *Salmo salar* (Salmon),
+and Trout (*Salmo trutta*) particularly because of their broad
+geographic coverage and long time-series availability. More broadly,
+electrofishing data form the basis of freshwater fish monitoring
+programmes in many countries, providing standardized measures of species
+presence, abundance, and size structure.
+
+Despite their widespread use, electrofishing data are often dispersed
+across institutions, heterogeneously formatted, or underutilized for
+regional analyses and international stock assessments. These limitations
+highlight the need to design and implement a coherent, standardized
+electrofishing database, tailored to the needs of ICES working groups,
+and capable of integrating datasets from multiple sources, survey
+protocols, and monitoring objectives.
+
+In recent years, the SUDOANG project has further developed a centralized
+database called dbeel, initiated during the POSE project, that
+harmonizes electrofishing datasets for eel monitoring across the Iberian
+Peninsula. The SUDOANG electrofishing database demonstrated the
+feasibility and value of structuring heterogeneous survey data into a
+unified framework, enabling its use in large‑scale assessments,
+modelling. Building on this foundation, our current work aims to adapt
+the SUDOANG database structure to support **multispecific**
+electrofishing surveys rather than eel‑focused datasets alone. This
+database is also made fully compatible with the DIADROMOUS database
+developped during the DIASPARA project. Furthermore, the use of a
+hierarchical structure provides an easy way to update data coming from
+regional or national authorities.
+
+The objective of this report, is to present the detailed code for
+building such a database in PostgreSQL and develop the excel format in
+support of future data calls for the WGEEL.
 
 # Creating a database
+
+```{r init}
+#| echo: FALSE
+#| warning: FALSE
+#| message: FALSE
+#| results: 'hide'
+
+#if (!grepl("montepomi", getwd())) {
+if(Sys.info()[["user"]] == 'joliviero'){
+setwd("D:/workspace/DIASPARA_WP3_dam/R")
+datawd <- "D:/DIASPARA/wgbast"
+} else if (Sys.info()[["user"]] == 'cedric.briand'){
+setwd("C:/workspace/DIASPARA_WP3_electrofishing/R")
+datawd <- "C:/Users/cedric.briand/OneDrive - EPTB Vilaine/Projets/DIASPARA/"
+}
+source("utilities/load_library.R")
+
+load_library("tidyverse")
+load_library("knitr")
+load_library("kableExtra")
+load_library("icesVocab")
+load_library("readxl")
+load_library("janitor")
+load_library("skimr")
+load_library("RPostgres")
+load_library("yaml")
+load_library("DBI")
+load_library("ggplot2")
+load_library("sf")
+load_library("janitor") #
+load_library("htmltools") 
+load_library("leaflet")
+load_library("flextable")
+load_library("ftExtra")
+# set_flextable_defaults(
+#   font.size = 8.5, font.family = "Calibri",
+#   font.color = "black",
+#   table.layout = "autofit",
+#   border.color = "black",
+#   padding.top = 3, padding.bottom = 3,
+#   padding.left = 4, padding.right = 4)
+cred <- read_yaml("../credentials.yml")
+# con_diaspara <- dbConnect(Postgres(), 
+#                            dbname = cred$dbnamehydro,
+#                            host = cred$hostmercure,
+#                            port = cred$port,
+#                            user = cred$usermercure,
+#                            password = cred$passwordmercure)
+con_diaspara <- dbConnect(Postgres(), 
+                          dbname = cred$dbnamediaspara,
+                          host = cred$hostdistant,
+                          port = cred$port,
+                          user = cred$userdiaspara,
+                          password = cred$passworddiaspara)
+con_diaspara_admin <- dbConnect(Postgres(), 
+                                dbname = cred$dbnamediaspara,
+                                host = cred$hostdistant,
+                                port = cred$port,
+                                user = cred$userdistant,
+                                password = cred$passworddistant)
+```
+
+## Referentials (in nomenclature)
+
+### Scientific Observation (electrofishing types)
+
+### Sex
+
+### Species
+
+### Age
+
+### Marking (wild, released)
+
+Origin hatchery or wild or unknown.
+
+## Database structure
+
+Each dam is characterized by a location which forms the top table
+(obstruction_place) (@fig-station). For some complex river systems
+(braided rivers, branches ...) it is sometimes necessary to link the
+dams together, thereby identifying the main dam structure used to
+calculate cumulated impact. Indeed if two dams are in two parallel
+branches of the river, for upstream migration the cumulated impact is
+only based on the height and characteristics of the main dam as
+otherwise we would enter similar height twice. For downstream migration,
+the flow is split within the dam complex, using the main dam, and all
+dams attached to it.
+
+```{mermaid}
+%%| label: fig-station
+%%| fig-cap: Simplied structure of the electrofishing database
+flowchart TB
+    A([Station]):::main
+    A --> B([Electrofishing operation]):::table
+    A --> C([Fishing gear operation]):::table
+    B -->|pass| D([Batch Ope]):::table
+    C --> D([Batch Ope]):::table
+    D --> E([Fish]):::table
+    E --> F([Biological Characteristics]):::table    
+    classDef table fill:#CD88
+    classDef main fill:#268073,color:white
+```
+
+**Inherited tables**
+
+To handle the updates of data, the database uses inheritance. The data
+are entered in the country schema, in this schema all tables inherit
+from the tables in the main dam schema (@fig-dam_db_opin). When updates
+are collected, one can simply upload all tables again in the country
+schema. Other columns can be added at the national level to collect
+additional information.
+
+```{mermaid}
+%%| label: fig-dam_db_opin
+%%| fig-cap: Inheritance in obstruction places tables
+flowchart TB
+    A([Station]):::main
+    A --> B([Electrofishing operation]):::main
+    A([Station]):::table
+    %% Short Path
+    A1([Station FR]):::table1 .-> A
+    A2([Station ES]):::table2  .-> A
+    A3([Station ES]):::table3 .-> A  
+    B1([Electrofishing operation FR]):::table1  --> B
+    B2([Electrofishing operation FR]):::table2  --> B
+    B3([Electrofishing operation FR]):::table3  --> B
+    classDef table fill:#CD88
+    classDef main fill:#268073,color:white
+    classDef table1 fill:#C3CA3C
+    classDef table2 fill:#5C308A,color:white
+    classDef table3 fill:#CC783D
+```
+
+Currently the data reporters is identified in EDMO (European Directory
+of Marine Organisations) (Table @tbl-icesEDMO), as for the first
+datacall the source of data will probably be the institute reporting at
+the national level. The development of a dam database in the Environment
+Agency will probably change this.
 
 # Populating the database with test examples
 
 # Creating template datacall for WGEEL
 
-# Annex : MPD Electrofishing 
+# Annex : Database ER diagram
 
+![Entity Relationship database
+dam](images/diaspara_electrofishing_mpd.png){#fig-erd
+fig-alt="An entity relationship diagram for the dam database"}
+
+## References
