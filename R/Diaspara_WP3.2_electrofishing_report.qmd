@@ -153,7 +153,7 @@ datawd <- "D:/DIASPARA/wgbast"
 setwd("C:/workspace/DIASPARA_WP3_electrofishing/R")
 datawd <- "C:/Users/cedric.briand/OneDrive - EPTB Vilaine/Projets/DIASPARA/"
 }
-source("utilities/load_library.R")
+source("../../DIASPARA_WP3_dam/R/utilities/load_library.R")
 
 load_library("tidyverse")
 load_library("knitr")
@@ -200,20 +200,6 @@ con_diaspara_admin <- dbConnect(Postgres(),
                                 password = cred$passworddistant)
 ```
 
-## Referentials (in nomenclature)
-
-### Scientific Observation (electrofishing types)
-
-### Sex
-
-### Species
-
-### Age
-
-### Marking (wild, released)
-
-Origin hatchery or wild or unknown.
-
 ## Database structure
 
 Each dam is characterized by a location which forms the top table
@@ -231,7 +217,7 @@ dams attached to it.
 %%| label: fig-station
 %%| fig-cap: Simplied structure of the electrofishing database
 flowchart TB
-    A([Station]):::main
+    A([Station]):::table
     A --> B([Electrofishing operation]):::table
     A --> C([Fishing gear operation]):::table
     B -->|pass| D([Batch Ope]):::table
@@ -239,7 +225,6 @@ flowchart TB
     D --> E([Fish]):::table
     E --> F([Biological Characteristics]):::table    
     classDef table fill:#CD88
-    classDef main fill:#268073,color:white
 ```
 
 **Inherited tables**
@@ -272,20 +257,140 @@ flowchart TB
     classDef table3 fill:#CC783D
 ```
 
-Currently the data reporters is identified in EDMO (European Directory
-of Marine Organisations) (Table @tbl-icesEDMO), as for the first
-datacall the source of data will probably be the institute reporting at
-the national level. The development of a dam database in the Environment
-Agency will probably change this.
-
 # Populating the database with test examples
 
 # Creating template datacall for WGEEL
 
-# Annex : Database ER diagram
+# Annex 1 : Database ER diagram
 
 ![Entity Relationship database
 dam](images/diaspara_electrofishing_mpd.png){#fig-erd
 fig-alt="An entity relationship diagram for the dam database"}
+
+# Annex2 : Nomenclature
+
+The nomenclature is derived from the [diadromous database](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html).
+
+### Scientific Observation (electrofishing types)
+
+The scientific observation table was created within the dbeel
+[@walker2011]. The list of fishing types was further adapted during
+SUDOANG and from exchanges with other users when building EDA model (e.g. Ireland). 
+So it's currently fit for eel but needs more work to cover all Salmon retated methods.
+
+::: {.callout-note}
+## note for WGDIAD
+At the international level, under the premices of WGDIAD, a review of the different methods used for electrofishing and their metadata would help building a more consistent vocabulary.
+:::
+
+```{r}
+#| label: nomenclature-scientific_observation_method
+#| echo: FALSE
+#| eval: TRUE
+#| warning: FALSE
+#| results: 'asis'
+
+
+tt <- "scientific_observation_method"
+tab <- dbGetQuery(con_diaspara, paste0("SELECT * FROM nomenclature.",tt))
+library(flextable)
+caption <- "Table of scientific observation method refering to electrofishing types"
+tab |>
+  flextable() |>
+  set_table_properties(layout = "autofit") |>
+  set_caption(caption = caption)
+
+
+
+```
+
+### Species
+
+ICES uses AphiaID as the reference, and this code was chosen for the DIADROMOUS database [Species table in DIADROMOUS](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#species-tr_species_spe)
+
+
+```{r}
+#| label: nomenclature-species
+#| echo: FALSE
+#| eval: TRUE
+#| warning: FALSE
+#| results: 'asis'
+
+
+
+
+tt <- "species"
+tab <- dbGetQuery(con_diaspara, paste0("SELECT * FROM nomenclature.",tt,
+    " WHERE no_code != 'CIV'"                                  ))
+library(flextable)
+caption <- "Table of species from DIADROMOUS DB"
+tab |>
+  flextable() |>
+  set_table_properties(layout = "autofit") |>
+  set_caption(caption = caption)
+
+
+
+```
+
+### Stage
+
+Stage are species specific. For more details see [Life stages in the diadromous DB](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#life-stages-tr_lifestage_lfs)
+
+```{r}
+#| label: nomenclature-stage
+#| echo: FALSE
+#| eval: TRUE
+#| warning: FALSE
+#| results: 'asis'
+
+
+
+tt <- "stage"
+tab <- dbGetQuery(con_diaspara, paste0("SELECT * FROM nomenclature.",tt ))
+library(flextable)
+caption <- "Table of species from DIADROMOUS DB"
+tab |>
+  flextable() |>
+  set_table_properties(layout = "autofit") |>
+  set_caption(caption = caption)
+
+
+
+```
+
+### Age
+
+Ages can be entered either as a numeric value or a class. This table might need some adaptation during future integration of national Salmon and Trout data. Age repartition can also be inferred from size using country specific size limits for age.
+For age see [Ages in the diadromous DB](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#age-tr_age_age)
+
+```{r}
+#| label: nomenclature-age
+#| echo: FALSE
+#| eval: TRUE
+#| warning: FALSE
+#| results: 'asis'
+
+
+tt <- "age"
+tab <- dbGetQuery(con_diaspara, paste0("SELECT * FROM nomenclature.",tt))
+library(flextable)
+caption <- "Table of species from DIADROMOUS DB"
+tab |>
+  flextable() |>
+  set_table_properties(layout = "autofit") |>
+  set_caption(caption = caption)
+
+
+
+```
+
+### Marking (wild, released)
+
+Some electrofishing dataset record the source of the fish, hatchery or wild or unknown,
+most often based on the presence of an adipose fin clip.
+
+
+
 
 ## References

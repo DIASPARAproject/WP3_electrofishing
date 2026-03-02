@@ -21,14 +21,16 @@ CREATE SEQUENCE seq;
 SELECT SETVAL('seq', (SELECT max(no_id)+1 FROM nomenclature.nomenclature)); --344
 
 
-DELETE FROM nomenclature.age 
+
+
+DELETE FROM nomenclature.age  
 INSERT INTO nomenclature.age (no_id,no_code,no_type,no_name)
   SELECT 
   nextval('seq') AS no_id,
   age_code AS no_code,
   'age' AS no_type,
   age_description AS no_name
-  FROM ref.tr_age_age; --11
+  FROM ref.tr_age_age  ; --11
 
 ALTER TABLE nomenclature.age OWNER TO diaspara_admin;
 GRANT SELECT ON nomenclature.age TO diaspara_read;  

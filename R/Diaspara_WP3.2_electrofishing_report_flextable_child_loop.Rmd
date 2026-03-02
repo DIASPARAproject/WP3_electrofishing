@@ -1,0 +1,8 @@
+```{r echo=FALSE}
+library(flextable)
+caption <- "toto"
+tab |>
+  flextable() |>
+  set_table_properties(layout = "autofit") |>
+  set_caption(caption = caption)
+```
