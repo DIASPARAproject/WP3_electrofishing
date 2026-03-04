@@ -202,16 +202,20 @@ con_diaspara_admin <- dbConnect(Postgres(),
 
 ## Database structure
 
-Each dam is characterized by a location which forms the top table
-(obstruction_place) (@fig-station). For some complex river systems
-(braided rivers, branches ...) it is sometimes necessary to link the
-dams together, thereby identifying the main dam structure used to
-calculate cumulated impact. Indeed if two dams are in two parallel
-branches of the river, for upstream migration the cumulated impact is
-only based on the height and characteristics of the main dam as
-otherwise we would enter similar height twice. For downstream migration,
-the flow is split within the dam complex, using the main dam, and all
-dams attached to it.
+The electrofishing starts with a location which forms the top table
+(Staion) (@fig-station). To this location an 'event' is added
+corresponding to a single fishing operation carried out at a certain
+time. This operation details elements about the station at the time of
+electrofishing, like the water surface, fishing conditions, equipment
+used, protocols ... The use of gear operations in lakes (like fyke net
+fishing) is developed into that structure, so basically different types
+of operations will or might be used. The Batch contains results about
+the fishing operation, either considered as a whole or per pass. So this
+can be an estimate of density, an estimate of number caught, or the
+number caught per pass. The densities can be reported according to
+different methods. The fish table follows the batch structure but is
+made for an individual fish, to which all types of biological
+characteristics used in the Diadromous DB can be attached.
 
 ```{mermaid}
 %%| label: fig-station
@@ -257,30 +261,84 @@ flowchart TB
     classDef table3 fill:#CC783D
 ```
 
-# Populating the database with test examples
 
-# Creating template datacall for WGEEL
+# Annex : SQL code
 
-# Annex 1 : Database ER diagram
+The code to create the database is available in the Dam report as the
+nomenclature is common to the two database and inherted. The code is
+derived from the POSE project SLIME [@walker2011], but cleaned up and 
+adapted to the new diadromous Database vocabularies.
+
+## Annex 1 : SQL code users
+
+<details>
+
+<summary>SQL code to create user rights</summary>
+
+``` {.sql include="../../DIASPARA_WP3_dam/SQL/1_users.sql"}
+```
+
+</details>
+
+## Annex 2 : SQL code nomenclature tables
+
+The nomenclature has been adapted to the DIASPARA project using the
+vocab in stockDB.
+
+<details>
+
+<summary>SQL code to create nomenclature</summary>
+
+``` {.sql include="../../DIASPARA_WP3_dam/SQL/2_nomenclature_structure.sql"}
+```
+
+</details>
+
+## Annex 3 : SQL code nomenclature data
+
+<details>
+
+<summary>Data in nomenclature</summary>
+
+``` {.sql include="../../DIASPARA_WP3_dam/SQL/3_nomenclature_data.sql"}
+```
+
+</details>
+
+## Annex 4 : SQL code electrofishing schema
+
+<details>
+
+<summary>Electrofishing data structure</summary>
+
+``` {.sql include="../SQL/electrofishing.sql"}
+```
+
+## Annex 5 : Database ER diagram
 
 ![Entity Relationship database
 dam](images/diaspara_electrofishing_mpd.png){#fig-erd
 fig-alt="An entity relationship diagram for the dam database"}
 
-# Annex2 : Nomenclature
+## Annex 6 : Nomenclature content
 
-The nomenclature is derived from the [diadromous database](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html).
+The nomenclature is derived from the [diadromous
+database](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html).
 
 ### Scientific Observation (electrofishing types)
 
 The scientific observation table was created within the dbeel
 [@walker2011]. The list of fishing types was further adapted during
-SUDOANG and from exchanges with other users when building EDA model (e.g. Ireland). 
-So it's currently fit for eel but needs more work to cover all Salmon retated methods.
+SUDOANG and from exchanges with other users when building EDA model
+(e.g. Ireland). So it's currently fit for eel but needs more work to
+cover all Salmon retated methods.
 
-::: {.callout-note}
+::: callout-note
 ## note for WGDIAD
-At the international level, under the premices of WGDIAD, a review of the different methods used for electrofishing and their metadata would help building a more consistent vocabulary.
+
+At the international level, under the premices of WGDIAD, a review of
+the different methods used for electrofishing and their metadata would
+help building a more consistent vocabulary.
 :::
 
 ```{r}
@@ -306,8 +364,9 @@ tab |>
 
 ### Species
 
-ICES uses AphiaID as the reference, and this code was chosen for the DIADROMOUS database [Species table in DIADROMOUS](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#species-tr_species_spe)
-
+ICES uses AphiaID as the reference, and this code was chosen for the
+DIADROMOUS database [Species table in
+DIADROMOUS](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#species-tr_species_spe)
 
 ```{r}
 #| label: nomenclature-species
@@ -335,7 +394,9 @@ tab |>
 
 ### Stage
 
-Stage are species specific. For more details see [Life stages in the diadromous DB](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#life-stages-tr_lifestage_lfs)
+Stage are species specific. For more details see [Life stages in the
+diadromous
+DB](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#life-stages-tr_lifestage_lfs)
 
 ```{r}
 #| label: nomenclature-stage
@@ -361,8 +422,12 @@ tab |>
 
 ### Age
 
-Ages can be entered either as a numeric value or a class. This table might need some adaptation during future integration of national Salmon and Trout data. Age repartition can also be inferred from size using country specific size limits for age.
-For age see [Ages in the diadromous DB](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#age-tr_age_age)
+Ages can be entered either as a numeric value or a class. This table
+might need some adaptation during future integration of national Salmon
+and Trout data. Age repartition can also be inferred from size using
+country specific size limits for age. For age see [Ages in the
+diadromous
+DB](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diaddb/diadromousdb.html#age-tr_age_age)
 
 ```{r}
 #| label: nomenclature-age
@@ -387,10 +452,8 @@ tab |>
 
 ### Marking (wild, released)
 
-Some electrofishing dataset record the source of the fish, hatchery or wild or unknown,
-most often based on the presence of an adipose fin clip.
+Some electrofishing dataset record the source of the fish, hatchery or
+wild or unknown, most often based on the presence of an adipose fin
+clip.
 
-
-
-
-## References
+# References
