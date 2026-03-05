@@ -33,14 +33,16 @@ Electrofishing is a method widely used to sample the fish populations in
 the aquatic environment [@cowx_fishing_1990]. It uses electric current
 between a cathode submersed in the water and a hand held anode
 [@lamarque_types_1976]. Fishes are first affected in their movements by
-electricity,and then stunned. Fishing operators operate around the anode
+electricity, and then stunned. Fishing operators operate around the anode
 with nets to catch the fish. Depending on the environment,
-electrofishing provide quantitative, or semi-quantitative estimations of
-the fishes number, which can be related to the surface of electrofishing
-or timing of electrofishing to provide either density estimates or
-semi-quantitative estimates of abundance. In wadable environment, the
-use of several pass allow to apply depletion statistical method to
-evaluate the abundance. However such operations are time consuming.
+electrofishing provides quantitative, or semi-quantitative estimations of
+the number of fish per species (with additional biometry information), 
+which can be related to the surface of electrofished area 
+or duration of electrofishing, to provide either density estimates or
+semi-quantitative estimates of abundance. In wadeable environments, the
+use of several passes (i.e., electrofishing the same area multiple times)
+allows the application of depletion statistical methods to
+estimate the abundance. However such operations are time consuming.
 There is a possibility to raise the single pass electrofishing using an
 average electrofishing efficiency to estimate eel densities. The type of
 electrofishing can be used to assess the probability of capture in the
@@ -63,7 +65,7 @@ assess their status in the frame of the Water Framework Directive (WFD)
 and these data could support the development of regional model for eel
 [@reporto2024]
 
-Electofishing operations are also applied in conservation relevant fish
+Electofishing operations are also applied in conservation-relevant fish
 sampling surveys in lotic freshwaters (e.g. Habitat Directive
 applications). Specific protocols are developed for salmonids
 [@bohlin_electrofishing_1989] and eel [@lambert_etude_1994] to better
@@ -71,13 +73,12 @@ account for fish behaviour and the reaction of fish to the current.
 Salmonids will react very quickly and need to be caught early in nets,
 and the timing of the operation is used. On the contrary, eels which
 often buries in the sediment or under boulders and rocks requires a long
-time to react to the current. Short stop of the current or movement of
+time to react to the electrical current. Short stop of the electrical current or movement of
 the electrode are required to make the eel out of their shelter, and for
-that reason eel specific protocols sometimes require the anode to stay
-in place for at least 30 seconds [@germis_evaluation_2009]. When the
-depth is too important, electrofishing can be carried out from a boat,
-and provide indices of the abundance of fishes
-[@tomanova_systematic_2013], these indices, while they do not provide
+that, reason eel-specific protocols sometimes require the anode to stay
+in place for at least 30 seconds [@germis_evaluation_2009]. In deeper areas, 
+electrofishing can be carried out from a boat to provide indices of the abundance of fishes
+[@tomanova_systematic_2013]. These indices, while they do not provide
 any quantitative assessment of abundance, can be used to model spatial
 variation in eel abundance [@briand_eel_2022].
 
@@ -90,17 +91,16 @@ efficiency and fish injuries [@pottier_electrofishing_2020]. The
 technique used (number of nets, number of anodes, size of nets, fishing
 protocol) varies depending on the country, the objective of the
 operation and the type of habitat, and this is true even for specific
-studies (e.g. Trutta @ices_working_2024).
+studies (e.g. trout @ices_working_2024).
 
 Multiple environmental factors can influence electrofishing efficiency
 including habitat (water conductivity, depth, riparian cover),
 turbidity, habitat, time, equipment personnel and protocol, and fish
-behaviour [@baldwin_evaluation_2012, @millar_modelling_2016]. The
-size-selectivity of electrofishing may also be biased as most habitats
-surveyed during electrofishing are shallow, with greater proportion of
-small eels.
+behaviour [@baldwin_evaluation_2012, @millar_modelling_2016]. The size‑selectivity of 
+electrofishing may also be biased, as most electrofished habitats are shallow. 
+In the case of eels, shallow areas typically hold a greater proportion of small individuals
 
-Electrofishing operations are collected by national and regional
+Electrofishing operations are conducted, as an example, by national and regional
 agencies for the Water Framework Directive (WFD) or with specific
 diadromous surveys objectives. Both sources have been identified as a
 major potential source of information for developing regional spatial
@@ -111,7 +111,7 @@ electrofishing data form the basis of freshwater fish monitoring
 programmes in many countries, providing standardized measures of species
 presence, abundance, and size structure.
 
-Despite their widespread use, electrofishing data are often dispersed
+Despite the widespread use, electrofishing data are often dispersed
 across institutions, heterogeneously formatted, or underutilized for
 regional analyses and international stock assessments. These limitations
 highlight the need to design and implement a coherent, standardized
@@ -129,11 +129,11 @@ modelling. Building on this foundation, our current work aims to adapt
 the SUDOANG database structure to support **multispecific**
 electrofishing surveys rather than eel‑focused datasets alone. This
 database is also made fully compatible with the DIADROMOUS database
-developped during the DIASPARA project. Furthermore, the use of a
+developed during the DIASPARA project. Furthermore, the use of a
 hierarchical structure provides an easy way to update data coming from
 regional or national authorities.
 
-The objective of this report, is to present the detailed code for
+The objective of this report is to present the detailed code for
 building such a database in PostgreSQL and develop the excel format in
 support of future data calls for the WGEEL.
 
@@ -203,13 +203,13 @@ con_diaspara_admin <- dbConnect(Postgres(),
 ## Database structure
 
 The electrofishing starts with a location which forms the top table
-(Staion) (@fig-station). To this location an 'event' is added
+(Station) (@fig-station). To this location, an 'event' is added
 corresponding to a single fishing operation carried out at a certain
 time. This operation details elements about the station at the time of
 electrofishing, like the water surface, fishing conditions, equipment
 used, protocols ... The use of gear operations in lakes (like fyke net
 fishing) is developed into that structure, so basically different types
-of operations will or might be used. The Batch contains results about
+of operations will (or might) be used. The Batch contains results about
 the fishing operation, either considered as a whole or per pass. So this
 can be an estimate of density, an estimate of number caught, or the
 number caught per pass. The densities can be reported according to
