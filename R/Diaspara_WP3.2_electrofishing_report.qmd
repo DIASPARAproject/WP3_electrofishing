@@ -330,8 +330,8 @@ database](https://diaspara.bordeaux-aquitaine.inrae.fr/deliverables/wp3/p17diadd
 The scientific observation table was created within the dbeel
 [@walker2011]. The list of fishing types was further adapted during
 SUDOANG and from exchanges with other users when building EDA model
-(e.g. Ireland). So it's currently fit for eel but needs more work to
-cover all Salmon retated methods.
+(e.g. Ireland). The database is currently fit and tested for eel and, 
+pending final tests for salmon and trout, other species can be added as well.
 
 ::: callout-note
 ## note for WGDIAD
