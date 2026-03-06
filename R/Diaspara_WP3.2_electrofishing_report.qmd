@@ -1,7 +1,8 @@
 ---
-title-block: false
+title: "Electrofishing database"
+subtitle: "DIASPARA WP3.2 final"
 date-format: "DD-MM-YYYY"
-description: "Electrofishing database"
+description: "Structure for the electrofishing database"
 title-block-banner: "images/diaspara_bandeau.png"
 title-block-banner-color: "white"
 number-sections: true
@@ -126,7 +127,7 @@ Peninsula. The SUDOANG electrofishing database demonstrated the
 feasibility and value of structuring heterogeneous survey data into a
 unified framework, enabling its use in large‑scale assessments,
 modelling. Building on this foundation, our current work aims to adapt
-the SUDOANG database structure to support **multispecific**
+the SUDOANG database structure to support multispecific
 electrofishing surveys rather than eel‑focused datasets alone. This
 database is also made fully compatible with the DIADROMOUS database
 developped during the DIASPARA project. Furthermore, the use of a
@@ -275,7 +276,7 @@ adapted to the new diadromous Database vocabularies.
 
 <summary>SQL code to create user rights</summary>
 
-``` {.sql include="../../DIASPARA_WP3_dam/SQL/1_users.sql"}
+``` {.sql include="../SQL/1_users.sql"}
 ```
 
 </details>
@@ -289,7 +290,7 @@ vocab in stockDB.
 
 <summary>SQL code to create nomenclature</summary>
 
-``` {.sql include="../../DIASPARA_WP3_dam/SQL/2_nomenclature_structure.sql"}
+``` {.sql include="../SQL/2_nomenclature_structure.sql"}
 ```
 
 </details>
@@ -300,7 +301,7 @@ vocab in stockDB.
 
 <summary>Data in nomenclature</summary>
 
-``` {.sql include="../../DIASPARA_WP3_dam/SQL/3_nomenclature_data.sql"}
+``` {.sql include="../SQL/3_nomenclature_data.sql"}
 ```
 
 </details>

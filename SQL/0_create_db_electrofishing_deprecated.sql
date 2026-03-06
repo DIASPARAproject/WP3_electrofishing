@@ -1,5 +1,7 @@
  
-  
+ -- This script transfert the electrofishing database from dbeel
+ -- this was done checking table per table
+ 
  -- Electrofishing
 
 --Create age table 
