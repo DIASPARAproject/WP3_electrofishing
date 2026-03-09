@@ -312,7 +312,7 @@ vocab in stockDB.
 
 <summary>Electrofishing data structure</summary>
 
-``` {.sql include="../SQL/electrofishing.sql"}
+``` {.sql include="../SQL/4_electrofishing_schema.sql"}
 ```
 
 ## Annex 5 : Database ER diagram
