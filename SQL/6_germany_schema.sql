@@ -19,6 +19,9 @@ CREATE TABLE electrofishing_de.data_provider (
 )
 INHERITS (electrofishing.data_provider);
 
+-- ALTER TABLE electrofishing_de.data_provider ADD CONSTRAINT fk_dp_edmo_key FOREIGN KEY (dp_edmo_key) 
+		-- REFERENCES "ref"."EDMO"("Key") ON DELETE RESTRICT ON UPDATE CASCADE   
+
 -- set owner/read rigths
 ALTER TABLE electrofishing_de.data_provider OWNER TO diaspara_admin;
 GRANT SELECT ON TABLE electrofishing_de.data_provider TO diaspara_read;
@@ -43,7 +46,11 @@ sta_coord_spread_m BIGINT,
 	CONSTRAINT fk_sta_sta_id FOREIGN KEY (sta_sta_id) 
 		REFERENCES electrofishing_de.station(sta_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
-INHERITS electrofishing.station;
+INHERITS (electrofishing.station);
+
+
+-- ALTER TABLE electrofishing_de.station ADD CONSTRAINT fk_sta_dp_id FOREIGN KEY (sta_dp_id) 
+		-- REFERENCES electrofishing_de.data_provider(dp_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE INDEX electrofishing_station_ix_sta_id ON electrofishing_de.station USING btree (sta_id);
 CREATE INDEX index_geom ON electrofishing_de.station USING gist (geom);
@@ -90,7 +97,7 @@ op_fish_region TEXT,
 	CONSTRAINT fk_op_sta_id FOREIGN KEY (op_sta_id) 
 		REFERENCES electrofishing_de.station(sta_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
-INHERITS electrofishing.operation;
+INHERITS (electrofishing.operation);
 
 
 ------------------------------------------------------------------------------------------------------------
@@ -133,7 +140,7 @@ gf_mean_depth_m NUMERIC,
 	CONSTRAINT fk_gf_sta_id FOREIGN KEY (gf_sta_id) 
 		REFERENCES electrofishing_de.station(sta_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
-INHERITS electrofishing.gear_fishing;
+INHERITS (electrofishing.gear_fishing);
 
 
 
@@ -174,8 +181,6 @@ ba_gf_id_original TEXT,
 ba_species_name TEXT,
 ba_species_de TEXT,
 entry_type TEXT,
-weight_g NUMERIC,
-weight_total_g NUMERIC,
 stage_original TEXT,
 remarks TEXT,
 	CONSTRAINT batch_fish_pkey PRIMARY KEY (ba_id),
@@ -197,11 +202,15 @@ INHERITS (electrofishing.batch_fish);
 ------------------------------------------------------------------------------------------------------------
 
 -- TABLE: electrofishing_de.biological_characteristic definition
--- DROP TABLE electrofishing.biological_characteristic;
+DROP TABLE electrofishing_de.biological_characteristic;
 
 CREATE TABLE electrofishing_de.biological_characteristic (
-	CONSTRAINT biological_characteristic_pkey PRIMARY KEY (bc_id)
+	CONSTRAINT biological_characteristic_pkey PRIMARY KEY (bc_id),
 	CONSTRAINT fk_bc_no_biol_char FOREIGN KEY (bc_no_biol_char) 
-		REFERENCES nomenclature.biological_characteristic_type(no_id) ON DELETE RESTRICT ON UPDATE CASCADE
+		REFERENCES nomenclature.biological_characteristic_type(no_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_bd_ba_id FOREIGN KEY (bc_ba_id) 
+		REFERENCES electrofishing_de.batch_fish(ba_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
-INHERITS electrofishing.biological_characteristic;
+INHERITS (electrofishing.biological_characteristic);
+
+CREATE INDEX dbmig_biological_characteristic_ix_bc_ba_id ON electrofishing_de.biological_characteristic USING btree (bc_ba_id);

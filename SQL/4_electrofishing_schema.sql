@@ -669,3 +669,11 @@ GRANT SELECT ON TABLE electrofishing.station TO diaspara_read;
 -- PostgreSQL database dump complete
 --
 
+ALTER TABLE nomenclature.nomenclature ADD COLUMN no_definition TEXT NULL;
+
+
+UPDATE nomenclature.biological_characteristic_type
+	SET bc_label='Length of the pectoral fin mm'
+	WHERE no_id=264;
+
+
