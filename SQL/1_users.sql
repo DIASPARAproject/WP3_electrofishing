@@ -76,3 +76,27 @@ GRANT SELECT
     IN SCHEMA dam_france
     TO diaspara_read;
 
+CREATE ROLE JanDag WITH 
+  NOSUPERUSER
+  CREATEDB
+  CREATEROLE
+  INHERIT
+  LOGIN
+  CONNECTION LIMIT -1;
+ALTER ROLE j WITH password '************';
+--- ALTER ROLE jules IN DATABASE "diaspara" SET search_path="$user", public;
+
+
+CREATE ROLE Benedikt WITH 
+  NOSUPERUSER
+  CREATEDB
+  CREATEROLE
+  INHERIT
+  LOGIN
+  CONNECTION LIMIT -1;
+ALTER ROLE b WITH password '*****************';
+
+GRANT diaspara_admin TO b ;
+GRANT diaspara_admin TO j ;
+
+SELECT version()
