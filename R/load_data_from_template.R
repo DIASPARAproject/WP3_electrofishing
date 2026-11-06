@@ -43,7 +43,7 @@ if (server == "distant") {
   con_diaspara <- dbConnect(Postgres(),
                             dbname   = cred$dbnamedistant,
                             host     = cred$hostdistant,
-                            port     = cred$distantport,
+                            port     = cred$portdistant,
                             user     = cred$userdistant,
                             password = cred$passworddistant)
 } else {
@@ -260,3 +260,160 @@ dp_establishment_name
 FROM dam_de.temp_data_provider; --3")
 
 DBI::dbDisconnect(con_diaspara)
+
+
+
+
+##########################################electrofishing
+
+### load DAMN data
+wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
+wd
+dir()
+setwd(wd)  #lokal, to be changed
+EDA_Fish <- "data/MigFish_EDA_data_call.xlsx"     # adjust path if needed
+
+sheets <- excel_sheets(EDA_Fish)
+fish <- map(set_names(sheets), ~ read_excel(EDA_Fish, sheet = .x, guess_max = 1e6))
+
+names(fish)                    # list of all sheets
+sapply(fish, nrow)             # rows per sheet
+fish$station         # access one sheet
+fish$batch_ope
+list2env(fish, envir = .GlobalEnv)
+
+
+
+#lokal, to be changed
+cred <- read_yaml("../credentials.yml")
+# con_diaspara <- dbConnect(Postgres(), 
+#                            dbname = cred$dbnamehydro,
+#                            host = cred$hostmercure,
+#                            port = cred$port,
+#                            user = cred$usermercure,
+#                            password = cred$passwordmercure)
+
+if (server == "distant") {
+  con_diaspara <- dbConnect(Postgres(),
+                            dbname   = cred$dbnamedistant,
+                            host     = cred$hostdistant,
+                            port     = cred$distantport,
+                            user     = cred$userdistant,
+                            password = cred$passworddistant)
+} else {
+  con_diaspara <- dbConnect(Postgres(),
+                            dbname   = cred$dbnamediaspara,
+                            host     = cred$host,
+                            port     = cred$port,
+                            user     = cred$userdiaspara,
+                            password = cred$passworddiaspara)
+}
+
+
+
+#data_provider
+DBI::dbWriteTable(
+  conn=con_diaspara,
+  name=DBI::Id(schema= "electrofishing_de", table = "temp_data_provider"),
+  value = data_provider,
+  overwrite=T
+)
+
+DBI::dbGetQuery(con_diaspara, "select * from electrofishing_de.temp_data_provider")
+data_provider_db <- 
+  DBI::dbGetQuery(con_diaspara, "select * from electrofishing_de.temp_data_provider")
+colnames(data_provider_db)
+
+#to delete what is there to make sur enot have duplicates
+dbExecute(con_diaspara, "DELETE FROM electrofishing_de.data_provider CASCADE")
+
+
+dbExecute(con_diaspara, "DELETE FROM electrofishing_de.data_provider 
+WHERE dp_id IN (SELECT dp_id FROM  electrofishing_de.temp_data_provider)")
+
+
+dbExecute(con_diaspara,
+          "INSERT INTO electrofishing_de.data_provider(
+  dp_id,
+  dp_name, 
+  dp_edmo_key,
+  dp_establishment_name)    
+ SELECT 
+  dp_id,
+  dp_name, 
+  NULL :: integer, 
+  dp_establishment_name
+FROM electrofishing_de.temp_data_provider") #3
+
+
+DBI::dbWriteTable(
+  conn=con_diaspara,
+  name=DBI::Id(schema= "electrofishing_de", table = "temp_station"),
+  value = station,
+  overwrite=T
+)
+
+DBI::dbGetQuery(con_diaspara, "select * from electrofishing_de.temp_station")
+station_db <- 
+  DBI::dbGetQuery(con_diaspara, "select * from electrofishing_de.temp_station")
+colnames(station_db)
+
+#DBI::dbGetQuery(con_diaspara, 
+#                "select op_op_id_original from dam_de.temp_obstruction_place where op_op_id_original IS NOT NULL")
+
+#DBI::dbExecute(con_diaspara, "UPDATE dam_de.temp_obstruction_place set op_water_code = '100000' WHERE op_water_code = '1e+05'")
+
+
+
+##dbExecute(connection, INSERT tagret shema.tabl
+       #target column1,     
+        #when a column that should be uID do not use it here, as it is created later in SQL beaver
+       #taget column2,...)
+#    SELECT
+        #original/temp column 1,
+        #original/temp column 2, ....)
+#   FROM temp/original table)
+
+
+dbExecute(con_diaspara,
+          "INSERT INTO electrofishing_de.station(
+  sta_name,
+  sta_sta_id, 
+  sta_dp_id, 
+  sta_id_original,
+  sta_country, 
+  geom, 
+  sta_bundesland, 
+  sta_water_name,
+  sta_wk_id,
+  sta_n_operations, 
+  sta_coord_spread_m)     
+ SELECT 
+  sta_name,
+  NULL :: uuid,
+  sta_dp_id, 
+  sta_id_original,
+  sta_country, 
+  ST_SetSRID(ST_MakePoint(sta_x, sta_y),4326) AS geom,
+  sta_bundesland, 
+  sta_water_name, 
+  sta_wk_id, 
+  sta_n_operations, 
+  sta_coord_spread_m
+FROM electrofishing_de.temp_station") #5642
+
+
+INSERT INTO electrofishing_de.station
+(sta_id,
+  sta_name,
+  sta_sta_id, 
+  sta_dp_id, 
+  sta_id_original,
+  sta_country, 
+  geom, 
+  sta_bundesland, 
+  sta_water_name,
+  sta_wk_id,
+  sta_n_operations, 
+  sta_coord_spread_m)
+VALUES(uuid_generate_v4(), '', ?, 0, '', '', ?, '', '', '', 0, 0);
