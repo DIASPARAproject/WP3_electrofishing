@@ -415,3 +415,14 @@ SELECT pg_catalog.setval('nomenclature.nomenclature_no_id_seq', 333, true);
 -- PostgreSQL database dump complete
 --
 
+
+-- Auto-generated SQL script #202611051100
+INSERT INTO nomenclature.species (no_code,no_type,no_name,sp_vernacular_name)
+	VALUES ('148719','Species','Lampetra planeri','European brook lamprey');
+INSERT INTO nomenclature.species (no_code,no_type,no_name,sp_vernacular_name)
+	VALUES ('154388','Species','Lota lota','Burbot');
+
+-- Auto-generated SQL script #202611051111
+INSERT INTO nomenclature.species (no_code,no_type,no_name,sp_vernacular_name)
+	VALUES ('101167','Species','Lampetra sp.','Brook or River lamprey');
+
