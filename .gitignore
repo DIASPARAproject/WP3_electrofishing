@@ -60,6 +60,10 @@ R/*.pdf
 R/*_files/*
 R/data/*.html
 R/data/*_xtml*.*
+R/data/*.xlsx
+!R/data/*.xlsx
+!R/data/data_call_electrofishing.xlsx
+!R/data/data_call_release.xlsx
 R/_extensions/*
 R/assets/*
 R/*.log
