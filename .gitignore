@@ -69,3 +69,5 @@ R/*_files
 R/_extensions
 *.bak
 *.xlsx
+
+*.Rproj
