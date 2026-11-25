@@ -42,18 +42,25 @@ sta_coord_spread_m BIGINT,
 	CONSTRAINT station_pkey PRIMARY KEY (sta_id),
 	CONSTRAINT uk_sta_id_original UNIQUE (sta_id_original),
 	CONSTRAINT fk_sta_dp_id FOREIGN KEY (sta_dp_id) 
-		REFERENCES electrofishing_de.data_provider(dp_id) ON DELETE CASCADE ON UPDATE CASCADE,
+		REFERENCES electrofishing_de.data_provider(dp_id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_sta_sta_id FOREIGN KEY (sta_sta_id) 
 		REFERENCES electrofishing_de.station(sta_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 INHERITS (electrofishing.station);
 
 
+/*ALTER TABLE electrofishing_de.station DROP CONSTRAINT fk_sta_dp_id;
+ALTER TABLE electrofishing_de.station ADD CONSTRAINT fk_sta_dp_id FOREIGN KEY (sta_dp_id) 
+		REFERENCES electrofishing_de.data_provider(dp_id) ON DELETE RESTRICT ON UPDATE CASCADE; */
+
 -- ALTER TABLE electrofishing_de.station ADD CONSTRAINT fk_sta_dp_id FOREIGN KEY (sta_dp_id) 
 		-- REFERENCES electrofishing_de.data_provider(dp_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE INDEX electrofishing_station_ix_sta_id ON electrofishing_de.station USING btree (sta_id);
 CREATE INDEX index_geom ON electrofishing_de.station USING gist (geom);
+
+ALTER TABLE electrofishing_de.station OWNER TO diaspara_admin;
+GRANT SELECT ON TABLE electrofishing_de.station TO diaspara_read;
 
 
 --------------------------------------------------------------------------------
@@ -99,6 +106,8 @@ op_fish_region TEXT,
 )
 INHERITS (electrofishing.operation);
 
+ALTER TABLE electrofishing_de.operation OWNER TO diaspara_admin;
+GRANT SELECT ON TABLE electrofishing_de.operation TO diaspara_read;
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -142,7 +151,8 @@ gf_mean_depth_m NUMERIC,
 )
 INHERITS (electrofishing.gear_fishing);
 
-
+ALTER TABLE electrofishing_de.gear_fishing OWNER TO diaspara_admin;
+GRANT SELECT ON TABLE electrofishing_de.gear_fishing TO diaspara_read;
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -169,6 +179,8 @@ CREATE TABLE electrofishing_de.batch_ope (
 )
 INHERITS (electrofishing.batch_ope);
 
+ALTER TABLE electrofishing_de.batch_ope OWNER TO diaspara_admin;
+GRANT SELECT ON TABLE electrofishing_de.batch_ope TO diaspara_read;
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -198,6 +210,8 @@ remarks TEXT,
 )
 INHERITS (electrofishing.batch_fish);
 
+ALTER TABLE electrofishing_de.batch_fish OWNER TO diaspara_admin;
+GRANT SELECT ON TABLE electrofishing_de.batch_fish TO diaspara_read;
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -214,3 +228,6 @@ CREATE TABLE electrofishing_de.biological_characteristic (
 INHERITS (electrofishing.biological_characteristic);
 
 CREATE INDEX dbmig_biological_characteristic_ix_bc_ba_id ON electrofishing_de.biological_characteristic USING btree (bc_ba_id);
+
+ALTER TABLE electrofishing_de.biological_characteristic OWNER TO diaspara_admin;
+GRANT SELECT ON TABLE electrofishing_de.biological_characteristic TO diaspara_read;
